@@ -1,0 +1,90 @@
+ADMIN_ID = SheinAutoMoreBot  # seu Telegram user_id
+POST_INTERVAL = 21600  # 5s
+CHANNELS = []
+PAUSED = False
+def is_admin(msg):
+    return msg.from_user.id == ADMIN_ID
+from aiogram.types import Message
+from aiogram.dispatcher.filters import Command
+
+@dp.message_handler(Command("addchannel"))
+async def add_channel(msg: Message):
+    if not is_admin(msg): return
+    parts = msg.text.split()
+    if len(parts) != 2:
+        await msg.reply("Uso: /addchannel @canal")
+        return
+    ch = parts[1]
+    if ch not in CHANNELS:
+        CHANNELS.append(ch)
+        await msg.reply(f"✅ Canal adicionado: {ch}")
+    else:
+        await msg.reply("Canal já existe.")
+
+@dp.message_handler(Command("removechannel"))
+async def remove_channel(msg: Message):
+    if not is_admin(msg): return
+    parts = msg.text.split()
+    if len(parts) != 2:
+        await msg.reply("Uso: /removechannel @canal")
+        return
+    ch = parts[1]
+    if ch in CHANNELS:
+        CHANNELS.remove(ch)
+        await msg.reply(f"❌ Canal removido: {ch}")
+    else:
+        await msg.reply("Canal não encontrado.")
+
+@dp.message_handler(Command("channels"))
+async def list_channels(msg: Message):
+    if not is_admin(msg): return
+    if not CHANNELS:
+        await msg.reply("Nenhum canal cadastrado.")
+    else:
+        await msg.reply("📢 Canais:\n" + "\n".join(CHANNELS))
+
+@dp.message_handler(Command("setinterval"))
+async def set_interval(msg: Message):
+    if not is_admin(msg): return
+    global POST_INTERVAL
+    parts = msg.text.split()
+    if len(parts) != 2 or not parts[1].isdigit():
+        await msg.reply("Uso: /setinterval segundos")
+        return
+    POST_INTERVAL = int(parts[1])
+    await msg.reply(f"⏱ Intervalo alterado para {POST_INTERVAL}s")
+
+@dp.message_handler(Command("pause"))
+async def pause_bot(msg: Message):
+    if not is_admin(msg): return
+    global PAUSED
+    PAUSED = True
+    await msg.reply("⏸ Bot pausado.")
+
+@dp.message_handler(Command("resume"))
+async def resume_bot(msg: Message):
+    if not is_admin(msg): return
+    global PAUSED
+    PAUSED = False
+    await msg.reply("▶️ Bot retomado.")
+
+@dp.message_handler(Command("stats"))
+async def stats(msg: Message):
+    if not is_admin(msg): return
+    await msg.reply(
+        f"📊 Status: {'PAUSADO' if PAUSED else 'ATIVO'}\n"
+        f"📢 Canais: {len(CHANNELS)}\n"
+        f"⏱ Intervalo: {POST_INTERVAL}s"
+    )
+async def repost():
+    while True:
+        if not PAUSED:
+            for ch in CHANNELS:
+                await bot.send_message(ch, MSG)
+        await asyncio.sleep(POST_INTERVAL)
+/addchannel @ofertasrelampago
+/setinterval 5
+/channels
+/stats
+/pause
+/resume
