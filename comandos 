@@ -1,5 +1,5 @@
 ADMIN_ID = SheinAutoMoreBot  # seu Telegram user_id
-POST_INTERVAL = 21600  # 5s
+POST_INTERVAL = 5sec
 CHANNELS = []
 PAUSED = False
 def is_admin(msg):
@@ -83,7 +83,7 @@ async def repost():
                 await bot.send_message(ch, MSG)
         await asyncio.sleep(POST_INTERVAL)
 /addchannel @ofertasrelampago
-/setinterval 5
+/setinterval 5 sec
 /channels
 /stats
 /pause
