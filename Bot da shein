@@ -20,7 +20,7 @@ async def repost():
     while True:
         for ch in CHANNELS:
             await bot.send_message(ch, MSG)
-        await asyncio.sleep(21600)  # 5min
+        await asyncio.sleep(10sec)  # 10sec
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
