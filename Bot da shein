@@ -1,0 +1,128 @@
+🔥 SHEIN COM DESCONTO AGORA
+🎟 Cupom: QEQ8X
+⏳ Tempo limitado
+👉 Comprar: https://onelink.shein.com/28/5fkyzat3xxrv
+
+from aiogram import Bot, Dispatcher
+from aiogram.utils import executor
+import asyncio
+
+TOKEN = "SEU_TOKEN"
+bot = Bot(TOKEN)
+dp = Dispatcher(bot)
+
+CHANNELS = ["@canal1", "@canal2"]
+MSG = """🔥 SHEIN COM DESCONTO
+🎟 Cupom: QEQ8X
+👉 https://onelink.shein.com/28/5fkyzat3xxrv"""
+
+async def repost():
+    while True:
+        for ch in CHANNELS:
+            await bot.send_message(ch, MSG)
+        await asyncio.sleep(21600)  # 5min
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.create_task(repost())
+    executor.start_polling(dp)
+
+# bot.py
+from aiogram import Bot, Dispatcher
+from aiogram.utils import executor
+import asyncio, sqlite3, time
+
+TOKEN = "SEU_TOKEN"
+BASE_LINK = "https://onelink.shein.com/28/5fkyzat3xxrv"
+CUPOM = "QEQ8X"
+CHANNELS = ["@canal1", "@canal2"]
+
+bot = Bot(TOKEN)
+dp = Dispatcher(bot)
+
+db = sqlite3.connect("clicks.db")
+db.execute("""
+CREATE TABLE IF NOT EXISTS logs (
+id INTEGER PRIMARY KEY,
+channel TEXT,
+utm TEXT,
+timestamp INTEGER
+)
+""")
+db.commit()
+
+def gen_link(channel):
+    utm = f"{channel}_{int(time.time())}"
+    link = f"{BASE_LINK}?utm_source=telegram&utm_campaign={utm}"
+    db.execute("INSERT INTO logs(channel, utm, timestamp) VALUES (?,?,?)",
+               (channel, utm, int(time.time())))
+    db.commit()
+    return link
+
+async def repost():
+    while True:
+        for ch in CHANNELS:
+            link = gen_link(ch.replace("@",""))
+            msg = f"""🔥 SHEIN COM DESCONTO
+🎟 Cupom: {QEQ8X}
+⏳ AGORA
+👉 {link}""https://onelink.shein.com/28/5fkyzat3xxrv"
+            await bot.send_message(ch, msg)
+        await asyncio.sleep(21600)  # 5min
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.create_task(repost())
+    executor.start_polling(dp)
+
+# panel.py
+from flask import Flask
+import sqlite3
+/projeto
+ ├ bot.py
+ ├ shortener.py
+ ├ panel.py
+ ├ clicks.db
+app = Flask(__name__)
+
+@app.route("/")
+def dashboard():
+    db = sqlite3.connect("clicks.db")
+    cur = db.cursor()
+    cur.execute("SELECT channel, COUNT(*) FROM logs GROUP BY channel")
+    data = cur.fetchall()
+    html = "<h1>Cliques por Canal</h1><ul>"
+    for c, n in data:
+        html += f"<li>{c}: {n}</li>"
+    html += "</ul>"
+    return html
+
+app.run(host="0.0.0.0", port=5000)
+
+🔥 Promoções diárias
+🎟 Cupom ativo
+⏳ Tempo limitado
+
+🔥 SHEIN COM DESCONTO
+🎟 Cupom: QEQ8X
+⏳ Só agora
+👉 LINK https://onelink.shein.com/28/5fkyzat3xxrv
+
+CHANNELS = ["@canal1", "@canal2"]
+python bot.py
+python shortener.py
+http://SEU_IP:8000/go/utm
+python panel.py
+http://SEU_IP:5000
+/projeto
+ ├ bot.py
+ ├ shortener.py
+ ├ panel.py
+ ├ clicks.db
+ from aiogram.types import Message
+from aiogram.dispatcher.filters import Command
+
+@dp.message_handler(Command("start"))
+async def start(msg: Message):
+    await msg.reply("Bot online. Funcionando.")
+    python bot.py
